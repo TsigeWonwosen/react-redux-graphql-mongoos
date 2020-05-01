@@ -14,32 +14,15 @@ GraphQLList,
 GraphQLNonNull
 }= graphql
 
-
-// const Books =[
-// {name:'Name of the Wind',genre:'Fantasy',id:'1',authorId:'1'},
-// {name:'The Final Empire',genre:'Fantasy',id:'2',authorId:'2'},
-// {name:'The Long Earth',genre:'Sci-Fi',id:'3',authorId:'3'},
-// {name:'Tikusat',genre:'Sibhat',id:'4',authorId:'4'},
-// {name:'Ke Admas Bashager',genre:'Paulos Gnogno',id:'5',authorId:'5'},
-// {name:'Ye berqa zemta',genre:'Tesfay',id:'6',authorId:'4'},
-// {name:'Ye gazetegna  Mastawesh',genre:'Paulos Gnogno',id:'7',authorId:'4'}
-// ]
-
-// const Authers =[
-// {name:'Name of the Wind',age:'48',id:'1'},
-// {name:'The Final Empire',age:'70',id:'2'},
-// {name:'The Long Earth',age:'80',id:'3'},
-// {name:'Tikusat',age:'65',id:'4'},
-// {name:'Ke Admas Bashager',age:'45',id:'5'}
-// ]
 const BookType = new GraphQLObjectType({
 	name:"Book",
 	fields:()=>({
 		id:{type:GraphQLID},
 		name:{type:GraphQLString},
 		genre:{type:GraphQLString},
+		authorId:{type:GraphQLString},
 		author:{
-			type:AutherType,
+			type:AuthorType,
 			resolve(parent,args){
 				// return _.find(Author,{id:parent.authorId})
 				return Author.findById(parent.authorId)
@@ -50,8 +33,8 @@ const BookType = new GraphQLObjectType({
 	})
 })
 
-const AutherType = new GraphQLObjectType({
-	name:"Auther",
+const AuthorType = new GraphQLObjectType({
+	name:"Author",
 	fields:()=>({
 		id:{type:GraphQLID},
 		name:{type:GraphQLString},
@@ -60,7 +43,7 @@ const AutherType = new GraphQLObjectType({
 			type:new GraphQLList(BookType),
 			resolve(parent,args){
 				// return _.filter(Book,{authorId:parent.id})
-				return Book.find(parent.id)
+				return Book.find({authorId:parent.id})
 			}
 
 		}
@@ -73,6 +56,7 @@ const RootQueary = new GraphQLObjectType({
 		book:{
 			type:BookType,
 			args:{id:{type:GraphQLID}},
+
 			resolve(parent,args){
 			// code to get data from DB//
 			// return _.find(Book,{id:args.id})
@@ -80,8 +64,8 @@ const RootQueary = new GraphQLObjectType({
 			}
 			},
 		
-		auther:{
-			type:AutherType,
+		author:{
+			type:AuthorType,
 			args:{id:{type:GraphQLID}},
 			resolve(parent,args){
 			// code to get data from DB//	
@@ -97,8 +81,8 @@ const RootQueary = new GraphQLObjectType({
 					return Book.find({})
 				}
 			},
-		authers:{
-			type: new GraphQLList(AutherType),
+		authors:{
+			type: new GraphQLList(AuthorType),
 			resolve(parent,args){
 				return Author.find({});
 			}
@@ -110,7 +94,7 @@ const Mutation = new GraphQLObjectType({
 	name:'Mutation',
 	fields:{
 		addAuthor:{
-			type:AutherType,
+			type:AuthorType,
 			args:{
 				name:{type:new GraphQLNonNull(GraphQLString)},
 				age:{type: new GraphQLNonNull(GraphQLInt)}
