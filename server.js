@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -6,7 +7,7 @@ const schema = require('./schema/schema')
 const graphqlHTTP = require('express-graphql')
 
 // 
-mongoose.connect('mongodb+srv://wonde:wondeshi@wscluster-hikgh.mongodb.net/graphql_test?retryWrites=true&w=majority',{useNewUrlParser: true, useUnifiedTopology: true},
+mongoose.connect(process.env.DATA_BASE_KEY,{useNewUrlParser: true, useUnifiedTopology: true},
 	()=>console.log("Successfuly connected with Db."))
 const app = express();
 app.use(cors())
